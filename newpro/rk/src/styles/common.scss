@@ -1,0 +1,148 @@
+@use './variables.scss' as *;
+@use './mixins.scss' as *;
+
+// 通用工具类
+
+.text-center {
+  text-align: center;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+.font-semibold {
+  font-weight: 600;
+}
+
+.text-primary {
+  color: $primary-color;
+}
+
+.text-secondary {
+  color: $text-secondary;
+}
+
+.text-white {
+  color: $text-white;
+}
+
+.bg-white {
+  background: $bg-white;
+}
+
+.bg-light {
+  background: $bg-light;
+}
+
+.bg-primary {
+  background: $primary-color;
+}
+
+.rounded {
+  border-radius: $border-radius-base;
+}
+
+.rounded-lg {
+  border-radius: $border-radius-lg;
+}
+
+.rounded-full {
+  border-radius: $border-radius-full;
+}
+
+.shadow {
+  box-shadow: $shadow-base;
+}
+
+.shadow-lg {
+  box-shadow: $shadow-lg;
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-center {
+  @include flex-center;
+}
+
+.flex-between {
+  @include flex-between;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.gap-sm {
+  gap: $spacing-sm;
+}
+
+.gap-md {
+  gap: $spacing-md;
+}
+
+.gap-lg {
+  gap: $spacing-lg;
+}
+
+.p-sm {
+  padding: $spacing-sm;
+}
+
+.p-md {
+  padding: $spacing-md;
+}
+
+.p-lg {
+  padding: $spacing-lg;
+}
+
+.m-sm {
+  margin: $spacing-sm;
+}
+
+.m-md {
+  margin: $spacing-md;
+}
+
+.m-lg {
+  margin: $spacing-lg;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.h-full {
+  height: 100%;
+}
+
+.overflow-hidden {
+  overflow: hidden;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.transition {
+  transition: all $transition-base;
+}

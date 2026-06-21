@@ -1,0 +1,6 @@
+logs/
+node_modules/
+.tmp-cli-build/
+dist-gui/win-unpacked/
+dist-gui/builder-debug.yml
+dist-gui/*.blockmap

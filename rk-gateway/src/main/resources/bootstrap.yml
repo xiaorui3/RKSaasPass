@@ -1,0 +1,332 @@
+﻿server:
+  port: 10010  #缃戝叧绔彛
+  tomcat:
+    uri-encoding: UTF-8   #鏈嶅姟缂栫爜
+
+spring:
+  profiles:
+    active: dev
+  application:
+    name: rk-gateway
+  cloud:
+    nacos:
+      server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
+      config:
+        namespace: ${NACOS_NAMESPACE:public}
+        group: DEFAULT_GROUP
+        file-extension: yaml
+        shared-configs: # 鍏变韩閰嶇疆
+          - data-id: rk-shared-spring.yaml # 鍏变韩spring閰嶇疆
+            refresh: false
+          - data-id: rk-shared-redis.yaml # 鍏变韩redis閰嶇疆
+            refresh: false
+          - data-id: rk-shared-logs.yaml # 鍏变韩鏃ュ織閰嶇疆
+            refresh: false
+      discovery:
+        namespace: ${NACOS_NAMESPACE:public}
+        group: DEFAULT_GROUP
+    gateway:
+      # 瀹屾暣璺敱閰嶇疆
+      routes:
+        # 璁よ瘉鏈嶅姟
+        - id: rk-auth
+          uri: lb://rk-auth
+          predicates:
+            - Path=/auth/**,/api/auth/**,/accounts/**
+          filters:
+            - StripPrefix=0
+
+        # 鐢ㄦ埛鏈嶅姟
+        - id: rk-user
+          uri: lb://rk-user
+          predicates:
+            - Path=/users/**,/tenants/**,/api/user/**,/api/tenants/**,/api/users/**,/admin/tenants/**,/admin/config/**,/admin/logs/**,/admin/ops/**
+          filters:
+            - StripPrefix=0
+
+        - id: rk-user-public-ops-api
+          uri: lb://rk-user
+          predicates:
+            - Path=/api/ops/migration/active
+          filters:
+            - RewritePath=/api/ops/migration/active, /admin/ops/public/deploy-package/active-migration
+            - StripPrefix=0
+
+        - id: rk-user-public-deploy-package
+          uri: lb://rk-user
+          predicates:
+            - Path=/admin/ops/public/deploy-package/**
+          filters:
+            - StripPrefix=0
+
+        # 璁よ瘉鏈嶅姟API锛堣鑹层€佽彍鍗曘€佹潈闄愶級
+        - id: rk-auth-api
+          uri: lb://rk-auth
+          predicates:
+            - Path=/roles/**,/menus,/menus/**,/api/roles/**,/api/menus,/api/menus/**,/api/privileges/**,/api/accounts/**
+          filters:
+            - StripPrefix=0
+
+        # 鍐呭鏈嶅姟
+        - id: rk-content
+          uri: lb://rk-content
+          predicates:
+            - Path=/content/**
+          filters:
+            - StripPrefix=1
+
+        # 鍐呭鏈嶅姟API
+        - id: rk-file-news-upload-api
+          uri: lb://rk-file
+          predicates:
+            - Path=/api/news/upload/**
+          filters:
+            - StripPrefix=0
+
+        - id: rk-content-api
+          uri: lb://rk-content
+          predicates:
+            - Path=/api/news/**,/api/works/**,/api/comments,/api/comments/**
+          filters:
+            - StripPrefix=0
+
+        # 鑻ヤ緷鏈嶅姟锛堝吋瀹瑰崟浣撳簲鐢ㄨ矾寰勶級
+        - id: ruoyi-legacy
+          uri: lb://rk-content
+          predicates:
+            - Path=/ruoyi/**
+          filters:
+            - StripPrefix=0
+
+        # 娲诲姩鏈嶅姟
+        - id: rk-activity
+          uri: lb://rk-activity
+          predicates:
+            - Path=/activities/**
+          filters:
+            - StripPrefix=1
+
+        # 娲诲姩鏈嶅姟API
+        - id: rk-activity-api
+          uri: lb://rk-activity
+          predicates:
+            - Path=/api/activity/**,/api/achievement/**
+          filters:
+            - StripPrefix=0
+
+        # 姣旇禌鏈嶅姟
+        - id: rk-competition
+          uri: lb://rk-activity
+          predicates:
+            - Path=/competition/**
+          filters:
+            - StripPrefix=1
+
+        # 姣旇禌鏈嶅姟API
+        - id: rk-competition-api
+          uri: lb://rk-activity
+          predicates:
+            - Path=/api/competition/**
+          filters:
+            - StripPrefix=0
+
+        # 鐢ㄦ埛鏈嶅姟API锛堟牎鍙嬨€佸叆绀剧敵璇枫€佷細鍛樸€佸巻鍙层€佽疆鎾浘绛夛級
+        - id: rk-user-admin-auth-api
+          uri: lb://rk-user
+          predicates:
+            - Path=/api/admin/auth/**
+          filters:
+            - StripPrefix=0
+
+        - id: rk-user-api
+          uri: lb://rk-user
+          predicates:
+            - Path=/api/alumni/**,/api/admission/**,/api/members/**,/api/history/**,/api/email-verification/**,/api/email-center/**,/api/referral-codes,/api/referral-codes/**,/api/credit/**,/api/volunteer/**,/api/finance/**,/api/api-catalog,/api/api-catalog/**,/api/demo-data,/api/demo-data/**,/banners/**,/api/admin/**,/api/config/**,/api/workflow/config/**
+          filters:
+            - RewritePath=/api/admin/(?<segment>.*), /admin/${segment}
+            - StripPrefix=0
+
+        - id: rk-user-mobile-api
+          uri: lb://rk-user
+          predicates:
+            - Path=/api/mobile/**
+          filters:
+            - RewritePath=/api/mobile/(?<segment>.*), /mobile/${segment}
+            - StripPrefix=0
+
+        - id: rk-user-mobile-legacy
+          uri: lb://rk-user
+          predicates:
+            - Path=/mobile/**
+          filters:
+            - StripPrefix=0
+
+        # 閫氱煡鏈嶅姟API
+        - id: rk-user-notification-api
+          uri: lb://rk-user
+          predicates:
+            - Path=/api/notifications/**
+          filters:
+            - StripPrefix=0
+
+        # 鏂囦欢鏈嶅姟API
+        - id: rk-file-api
+          uri: lb://rk-file
+          predicates:
+            - Path=/api/files/**
+          filters:
+            - StripPrefix=0
+
+        # MinIO public files
+        - id: rk-minio-files
+          uri: ${MINIO_ENDPOINT:http://minio:9000}
+          predicates:
+            - Path=/minio-files,/minio-files/**
+          filters:
+            - RewritePath=/minio-files/?(?<segment>.*), /${segment}
+
+        # File service
+        - id: rk-file
+          uri: lb://rk-user
+          predicates:
+            - Path=/files/**
+          filters:
+            - StripPrefix=0
+
+        # 娑堟伅鏈嶅姟
+        - id: rk-message
+          uri: lb://rk-message
+          predicates:
+            - Path=/notifications/**
+          filters:
+            - StripPrefix=1
+
+        # 娑堟伅鏈嶅姟API锛堣仈绯绘垜浠級
+        - id: rk-message-api
+          uri: lb://rk-message
+          predicates:
+            - Path=/api/contact/**
+          filters:
+            - StripPrefix=0
+
+        # 閭欢鏈嶅姟API
+        - id: rk-message-email-api
+          uri: lb://rk-message
+          predicates:
+            - Path=/api/email/**
+          filters:
+            - StripPrefix=0
+
+        # 閭欢妯℃澘鏈嶅姟API
+        - id: rk-message-email-template-api
+          uri: lb://rk-message
+          predicates:
+            - Path=/api/email-templates/**
+          filters:
+            - StripPrefix=0
+
+        # 鑰冭瘯鏈嶅姟
+        - id: rk-exam
+          uri: lb://rk-exam
+          predicates:
+            - Path=/exam/**
+          filters:
+            - StripPrefix=1
+
+        # 鏀粯鏈嶅姟
+        - id: rk-pay
+          uri: lb://rk-pay
+          predicates:
+            - Path=/pay/**
+          filters:
+            - StripPrefix=1
+
+        # 鎼滅储鏈嶅姟
+        - id: rk-search-api
+          uri: lb://rk-search
+          predicates:
+            - Path=/api/search/**
+          filters:
+            - RewritePath=/api/search/(?<segment>.*), /${segment}
+            - StripPrefix=0
+
+        - id: rk-search
+          uri: lb://rk-search
+          predicates:
+            - Path=/search/**
+          filters:
+            - StripPrefix=1
+
+        # 浜ゆ槗鏈嶅姟
+        - id: rk-trade
+          uri: lb://rk-trade
+          predicates:
+            - Path=/trade/**
+          filters:
+            - StripPrefix=1
+
+        # 鏁版嵁鏈嶅姟
+        - id: rk-data-api
+          uri: lb://rk-data
+          predicates:
+            - Path=/api/data/**
+          filters:
+            - RewritePath=/api/data/(?<segment>.*), /data/${segment}
+            - StripPrefix=0
+
+        - id: rk-data
+          uri: lb://rk-data
+          predicates:
+            - Path=/data/**
+          filters:
+            - StripPrefix=1
+
+      # 鍏ㄥ眬璺ㄥ煙閰嶇疆
+      globalcors:
+        add-to-simple-url-handler-mapping: true
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - "${RK_WEB_PUBLIC_ORIGIN:http://localhost:5173}"
+              - "http://localhost:5173"
+              - "http://127.0.0.1:5173"
+              - "http://localhost:30080"
+              - "http://127.0.0.1:30080"
+            allowedMethods:
+              - "GET"
+              - "POST"
+              - "DELETE"
+              - "PUT"
+              - "OPTIONS"
+            allowedHeaders: "*"
+            allowCredentials: true
+            maxAge: 360000
+
+# 璁よ瘉鎺掗櫎璺緞閰嶇疆
+tj:
+  auth:
+    exclude-path:
+      - /error/**
+      - /jwks
+      - /accounts/login
+      - /accounts/admin/login
+      - /accounts/refresh
+      - POST:/auth/refresh-session
+      - GET:/tenants/list
+      - GET:/api/tenants/list
+      - GET:/api/mobile/releases/latest
+      - GET:/mobile/releases/latest
+      - GET:/api/ops/migration/active
+      - GET:/minio-files/**
+      - GET:/admin/ops/public/deploy-package/**/linux-ssh-download
+      - GET:/api/contact/public/shield
+      - GET:/api/comments
+      - POST:/api/contact/**
+      - /doc.html
+      - /v2/api-docs/**
+      - /swagger-resources/**
+      - /webjars/**
+
+logging:
+  level:
+    com.tianji: debug

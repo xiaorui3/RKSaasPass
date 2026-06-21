@@ -1,0 +1,98 @@
+# RK-Web open-source ignore rules
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+.vs/
+.claude/
+**/.claude/
+.qoder/
+.ai-memory/
+.tmp/
+.tmp-*/
+temp/
+tmp/
+
+# Git worktrees / local snapshots
+.worktrees/
+ui-branch-snapshots/
+
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+*.local
+*.secret
+*.secrets
+*.pem
+*.key
+id_rsa
+id_rsa.*
+credentials.xml
+**/credentials.xml
+local.properties
+
+# Logs and runtime output
+logs/
+**/logs/
+*.log
+*.out.log
+*.err.log
+*.gz
+nohup.out
+stdout.log
+stderr.log
+
+# Java / Maven
+target/
+**/target/
+.mvn/timing.properties
+
+# Node / frontend
+node_modules/
+**/node_modules/
+dist/
+**/dist/
+dist-gui/
+**/dist-gui/
+build/
+**/build/
+.vite/
+**/.vite/
+coverage/
+
+# Test artifacts
+test-results/
+**/test-results/
+playwright-report/
+**/playwright-report/
+test-screenshots/
+**/test-screenshots/
+testing-reports/
+**/testing-reports/
+*.webm
+
+# Generated/private deployment artifacts
+.jenkins-generated/
+nacosConfig/
+database/mysql_export_*/
+**/export/
+**/inventory/*live*.json
+release-assets/
+installer/remote-installer/logs/
+installer/remote-installer/.tmp-*/
+
+# Android
+.gradle/
+**/.gradle/
+android-client/rk-club-android/dist/
+android-client/rk-club-android/signing/
+*.keystore
+*.jks
+*.p12
+
+# Local helper scripts that may contain host credentials
+remote_ssh.py
+remote_ssh_master01.py

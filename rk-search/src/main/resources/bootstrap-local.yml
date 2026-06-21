@@ -1,0 +1,13 @@
+﻿spring:
+  cloud:
+    nacos:
+      server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
+      discovery:
+        namespace: ${NACOS_NAMESPACE:public}
+        group: DEFAULT_GROUP
+        # ip: ${SERVICE_INSTANCE_IP:}
+  elasticsearch:
+    uris: ${ELASTICSEARCH_URIS:http://127.0.0.1:9200}
+logging:
+  level:
+    com.tianji: debug

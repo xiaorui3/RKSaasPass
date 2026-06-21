@@ -1,0 +1,9 @@
+﻿spring:
+  profiles:
+    active: test
+  cloud:
+    nacos:
+      config:
+        enabled: false
+      discovery:
+        enabled: false

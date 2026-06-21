@@ -1,0 +1,208 @@
+// @ts-check
+const { test, expect } = require('@playwright/test')
+
+const BASE_URL = 'http://localhost:5173'
+const API_BASE = 'http://localhost:10010'
+
+const MANAGER = {
+  username: 'manager_a',
+  password: '123456'
+}
+
+const MEMBER = {
+  username: 'member_a',
+  password: '123456'
+}
+
+async function loginApi(request, user) {
+  const res = await request.post(`${API_BASE}/auth/login`, {
+    data: user
+  })
+  const body = await res.json()
+  if (body.code !== 200 || !body.data?.token) {
+    throw new Error(`Login failed: ${JSON.stringify(body)}`)
+  }
+  return body.data
+}
+
+async function applyLogin(page, loginData) {
+  await page.goto(`${BASE_URL}/`, { waitUntil: 'networkidle' })
+  await page.evaluate((data) => {
+    localStorage.setItem('token', data.token)
+    localStorage.setItem('tenantId', data.organizationId)
+    localStorage.setItem('userInfo', JSON.stringify({
+      userId: data.userId,
+      username: data.username,
+      organizationId: data.organizationId,
+      roles: data.roles || []
+    }))
+  }, loginData)
+}
+
+function formatDateTime(date) {
+  const pad = (value) => String(value).padStart(2, '0')
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`
+}
+
+test('manager should be able to open email center and send bulk email to manual recipients', async ({ page, request }) => {
+  const seed = Date.now()
+  const recipientEmail = `bulk_${seed}@example.com`
+  const login = await loginApi(request, MANAGER)
+  await applyLogin(page, login)
+
+  await page.goto(`${BASE_URL}/admin/club/email-center`, { waitUntil: 'networkidle' })
+  await expect(page.getByText(/邮件发送中心/).first()).toBeVisible()
+
+  await page.getByPlaceholder(/请输入邮箱/).fill(recipientEmail)
+  await page.getByPlaceholder(/请输入邮件主题/).fill(`E2E 邮件发送 ${seed}`)
+  await page.getByPlaceholder(/请输入邮件正文/).fill('这是后台邮件发送中心的自动化测试邮件。')
+
+  await page.getByRole('button', { name: /发送邮件/ }).click()
+  await expect(page.locator('.el-message').last()).toContainText(/发送成功|加入队列/)
+  await expect(page.getByRole('tab', { name: /发送历史/ })).toBeVisible()
+})
+
+test('manager should be able to resolve recipients by role in email center', async ({ page, request }) => {
+  const login = await loginApi(request, MANAGER)
+  await applyLogin(page, login)
+
+  await page.goto(`${BASE_URL}/admin/club/email-center`, { waitUntil: 'networkidle' })
+  await expect(page.getByText(/邮件发送中心/).first()).toBeVisible()
+
+  await page.getByText(/按角色/).click()
+  await page.locator('.el-select').first().click()
+  await page.locator('.el-select-dropdown:visible .el-select-dropdown__item').filter({ hasText: /普通用户|普通成员|成员/ }).first().click()
+  await page.keyboard.press('Escape')
+  await page.getByRole('button', { name: /预览收件人/ }).click()
+  await expect(page.locator('.el-message').last()).toContainText(/已解析/)
+  await expect(page.locator('.el-table__row').first()).toBeVisible()
+})
+
+test('manager should be able to resolve recipients by activity registrants', async ({ page, request }) => {
+  const seed = Date.now()
+  const managerAuth = await loginApi(request, MANAGER)
+  const memberAuth = await loginApi(request, MEMBER)
+
+  const headers = {
+    Authorization: `Bearer ${managerAuth.token}`,
+    'X-Tenant-Id': managerAuth.organizationId,
+    'Content-Type': 'application/json'
+  }
+
+  const now = new Date()
+  const oneHourAgo = new Date(now.getTime() - 60 * 60 * 1000)
+  const oneHourLater = new Date(now.getTime() + 60 * 60 * 1000)
+  const tomorrow = new Date(now.getTime() + 24 * 60 * 60 * 1000)
+  const tomorrowPlusTwo = new Date(now.getTime() + 26 * 60 * 60 * 1000)
+
+  const createRes = await request.post(`${API_BASE}/api/activity/add`, {
+    headers,
+    data: {
+      activityName: `email-center-activity-${seed}`,
+      activityType: 1,
+      location: '活动报名人测试',
+      maxParticipants: 20,
+      startTime: formatDateTime(tomorrow),
+      endTime: formatDateTime(tomorrowPlusTwo),
+      registrationStartTime: formatDateTime(oneHourAgo),
+      registrationEndTime: formatDateTime(oneHourLater),
+      content: '活动报名人收件人测试'
+    }
+  })
+  const createBody = await createRes.json()
+  const activityId = createBody.data
+
+  await request.post(`${API_BASE}/api/activity/${activityId}/register`, {
+    headers: {
+      Authorization: `Bearer ${memberAuth.token}`,
+      'X-Tenant-Id': memberAuth.organizationId
+    }
+  })
+
+  await applyLogin(page, managerAuth)
+  await page.goto(`${BASE_URL}/admin/club/email-center`, { waitUntil: 'networkidle' })
+  await page.getByText(/按活动报名人/).click()
+  await page.locator('.el-select').first().click()
+  await page.locator('.el-select-dropdown:visible .el-select-dropdown__item').filter({ hasText: `email-center-activity-${seed}` }).first().click()
+  await page.keyboard.press('Escape')
+  await page.getByRole('button', { name: /预览收件人/ }).click()
+  await expect(page.locator('.el-message').last()).toContainText(/已解析/)
+  await expect(page.locator('.el-table__row').first()).toBeVisible()
+})
+
+test('manager should be able to resolve recipients by competition registrants', async ({ page, request }) => {
+  const seed = Date.now()
+  const managerAuth = await loginApi(request, MANAGER)
+  const memberAuth = await loginApi(request, MEMBER)
+
+  const headers = {
+    Authorization: `Bearer ${managerAuth.token}`,
+    'X-Tenant-Id': managerAuth.organizationId,
+    'Content-Type': 'application/json'
+  }
+
+  const now = new Date()
+  const oneHourAgo = new Date(now.getTime() - 60 * 60 * 1000)
+  const oneHourLater = new Date(now.getTime() + 60 * 60 * 1000)
+  const tomorrow = new Date(now.getTime() + 24 * 60 * 60 * 1000)
+  const tomorrowPlusTwo = new Date(now.getTime() + 26 * 60 * 60 * 1000)
+
+  const createRes = await request.post(`${API_BASE}/api/competition`, {
+    headers,
+    data: {
+      title: `email-center-competition-${seed}`,
+      description: '比赛报名人收件人测试',
+      competitionType: 'coding',
+      level: 'school',
+      organizer: 'tenant1',
+      registrationStart: formatDateTime(oneHourAgo),
+      registrationEnd: formatDateTime(oneHourLater),
+      competitionStart: formatDateTime(tomorrow),
+      competitionEnd: formatDateTime(tomorrowPlusTwo),
+      maxParticipants: 30,
+      isPublished: true
+    }
+  })
+  const createBody = await createRes.json()
+  const competitionId = createBody.data
+
+  await request.post(`${API_BASE}/api/competition/${competitionId}/register`, {
+    headers: {
+      Authorization: `Bearer ${memberAuth.token}`,
+      'X-Tenant-Id': memberAuth.organizationId,
+      'Content-Type': 'application/json'
+    },
+    data: {
+      name: 'member_a',
+      studentId: `member-${seed}`,
+      phone: '13800138000',
+      email: `member-${seed}@example.com`
+    }
+  })
+
+  await applyLogin(page, managerAuth)
+  await page.goto(`${BASE_URL}/admin/club/email-center`, { waitUntil: 'networkidle' })
+  await page.getByText(/按比赛报名人/).click()
+  await page.locator('.el-select').first().click()
+  await page.locator('.el-select-dropdown:visible .el-select-dropdown__item').filter({ hasText: `email-center-competition-${seed}` }).first().click()
+  await page.keyboard.press('Escape')
+  await page.getByRole('button', { name: /预览收件人/ }).click()
+  await expect(page.locator('.el-message').last()).toContainText(/已解析/)
+  await expect(page.locator('.el-table__row').first()).toBeVisible()
+})
+
+test('manager should be able to select recipients by member in email center', async ({ page, request }) => {
+  const login = await loginApi(request, MANAGER)
+  await applyLogin(page, login)
+
+  await page.goto(`${BASE_URL}/admin/club/email-center`, { waitUntil: 'networkidle' })
+  await expect(page.getByText(/邮件发送中心/).first()).toBeVisible()
+
+  await page.getByText(/按成员/).click()
+  await page.locator('.el-select').first().click()
+  await page.locator('.el-select-dropdown:visible .el-select-dropdown__item').first().click()
+  await page.keyboard.press('Escape')
+  await page.getByRole('button', { name: /预览收件人/ }).click()
+  await expect(page.locator('.el-message').last()).toContainText(/已解析/)
+  await expect(page.locator('.el-table__row').first()).toBeVisible()
+})

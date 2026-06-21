@@ -1,0 +1,52 @@
+﻿server:
+  port: 8083  #绔彛
+  tomcat:
+    uri-encoding: UTF-8   #鏈嶅姟缂栫爜
+spring:
+  profiles:
+    active: dev
+  application:
+    name: rk-search
+  cloud:
+    nacos:
+      server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
+      config:
+        namespace: ${NACOS_NAMESPACE:public}
+        group: DEFAULT_GROUP
+        file-extension: yaml
+        shared-configs: # 鍏变韩閰嶇疆
+          - data-id: rk-shared-spring.yaml # 鍏变韩spring閰嶇疆
+            refresh: false
+          - data-id: rk-shared-redis.yaml # 鍏变韩redis閰嶇疆
+            refresh: false
+          - data-id: rk-shared-mybatis.yaml # 鍏变韩mybatis閰嶇疆
+            refresh: false
+          - data-id: rk-shared-logs.yaml # 鍏变韩鏃ュ織閰嶇疆
+            refresh: false
+          - data-id: rk-shared-feign.yaml # 鍏变韩feign閰嶇疆
+            refresh: false
+          - data-id: rk-shared-mq.yaml # 鍏变韩MQ閰嶇疆
+            refresh: false
+      discovery:
+        namespace: ${NACOS_NAMESPACE:public}
+        group: DEFAULT_GROUP
+tj:
+  swagger:
+    enable: true
+    package-path: com.tianji.search.controller
+    title: 澶╂満瀛﹀爞 - 鎼滅储绯荤粺鎺ュ彛鏂囨。
+    description: 璇ユ湇鍔″寘鍚绋嬫悳绱€佸叴瓒ｆ帹鑽愮瓑鐩稿叧鍔熻兘
+    contact-name: 浼犳櫤鏁欒偛路鐮旂┒闄?
+    contact-url: http://www.itcast.cn/
+    contact-email: zhanghuyi@itcast.cn
+    version: v1.0
+    enableResponseWrap: true
+  auth:
+    resource:
+      enable: true
+      includeLoginPaths:
+        - /interests/**
+        - /courses/admin
+  jdbc:
+    database: rk_search
+

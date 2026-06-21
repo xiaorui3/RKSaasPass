@@ -1,0 +1,51 @@
+﻿server:
+  port: 8090  #绔彛
+  tomcat:
+    uri-encoding: UTF-8   #鏈嶅姟缂栫爜
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  profiles:
+    active: dev
+  application:
+    name: rk-activity
+  cloud:
+    nacos:
+      server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
+      config:
+        namespace: ${NACOS_NAMESPACE:public}
+        group: DEFAULT_GROUP
+        file-extension: yaml
+        shared-configs: # 鍏变韩閰嶇疆
+          - data-id: rk-shared-spring.yaml # 鍏变韩spring閰嶇疆
+            refresh: false
+          - data-id: rk-shared-redis.yaml # 鍏变韩redis閰嶇疆
+            refresh: false
+          - data-id: rk-shared-mybatis.yaml # 鍏变韩mybatis閰嶇疆
+            refresh: false
+          - data-id: rk-shared-logs.yaml # 鍏变韩鏃ュ織閰嶇疆
+            refresh: false
+          - data-id: rk-shared-feign.yaml # 鍏变韩feign閰嶇疆
+            refresh: false
+          - data-id: rk-shared-mq.yaml # 鍏变韩mq閰嶇疆
+            refresh: false
+          - data-id: rk-shared-minio.yaml # 鍏变韩minio閰嶇疆
+            refresh: false
+      discovery:
+        namespace: ${NACOS_NAMESPACE:public}
+        group: DEFAULT_GROUP
+tj:
+  swagger:
+    enable: true
+    enableResponseWrap: true
+    package-path: com.tianji.learning.controller
+    title: 澶╂満瀛﹀爞 - 瀛︿範涓績鎺ュ彛鏂囨。
+    description: 璇ユ湇鍔″寘鍚敤鎴峰涔犵殑鍚勭杈呭姪鍔熻兘
+    contact-name: 浼犳櫤鏁欒偛路鐮旂┒闄?    contact-url: http://www.itcast.cn/
+    contact-email: zhanghuyi@itcast.cn
+    version: v1.0
+  jdbc:
+    database: rk_activity
+  auth:
+    resource:
+      enable: true

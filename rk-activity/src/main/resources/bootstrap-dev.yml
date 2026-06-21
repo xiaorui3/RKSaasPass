@@ -1,0 +1,9 @@
+﻿spring:
+  cloud:
+    nacos:
+      server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
+      discovery:
+        # ip: ${SERVICE_INSTANCE_IP:}
+logging:
+  level:
+    com.tianji: debug

@@ -1,0 +1,11 @@
+﻿spring:
+  cloud:
+    nacos:
+      server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
+      discovery:
+        namespace: ${NACOS_NAMESPACE:public}
+        group: DEFAULT_GROUP
+        # ip: ${SERVICE_INSTANCE_IP:}
+logging:
+  level:
+    com.tianji: debug

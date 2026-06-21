@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="rk_primary">#146C5C</color>
+    <color name="rk_primary_dark">#0E4D43</color>
+    <color name="rk_accent">#F0B429</color>
+    <color name="rk_surface">#FFFFFF</color>
+    <color name="rk_background">#F4F7F6</color>
+    <color name="rk_text">#14213D</color>
+</resources>

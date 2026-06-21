@@ -1,0 +1,117 @@
+{
+  "ssh": {
+    "host": "203.0.113.10",
+    "port": 22,
+    "username": "root",
+    "password": "<CHANGE_ME>",
+    "privateKeyPath": "",
+    "passphrase": "<CHANGE_ME_OPTIONAL>",
+    "connectTimeoutSeconds": 20
+  },
+  "git": {
+    "provider": "gitee",
+    "providerOptions": ["gitee", "github"],
+    "repositoryUrl": "https://gitee.com/example/rk-web.git",
+    "branch": "main",
+    "username": "",
+    "token": "<CHANGE_ME_OPTIONAL>",
+    "githubPending": true
+  },
+  "deployment": {
+    "name": "rk-web-open-source",
+    "targetPath": "/opt/rk-web",
+    "publicBaseUrl": "http://203.0.113.10",
+    "timezone": "Asia/Shanghai",
+    "domesticMirror": true
+  },
+  "runtime": {
+    "mode": "docker-compose",
+    "supportedModes": ["docker-compose", "k3s"],
+    "installDocker": true,
+    "installK3s": true,
+    "buildOnRemote": true,
+    "deployServices": true
+  },
+  "compose": {
+    "projectName": "rk-web",
+    "gatewayPort": 10010,
+    "frontendPort": 30080,
+    "nacosPort": 8848,
+    "rabbitManagementPort": 15672,
+    "minioConsolePort": 9001
+  },
+  "k3s": {
+    "namespace": "rk-web",
+    "imageMode": "local-tar",
+    "imageModeOptions": ["local-tar", "registry"],
+    "storageClassName": "local-path",
+    "exposureType": "nodePort",
+    "frontendNodePort": 30080,
+    "gatewayNodePort": 30010
+  },
+  "admin": {
+    "tenantName": "RK System",
+    "tenantCode": "system",
+    "username": "admin",
+    "initialPassword": "<CHANGE_ME>",
+    "email": "admin@example.invalid",
+    "phone": ""
+  },
+  "mysql": {
+    "mode": "managed",
+    "rootUser": "root",
+    "rootPassword": "<CHANGE_ME>",
+    "appUser": "rk_app",
+    "appPassword": "<CHANGE_ME>",
+    "host": "rk-mysql",
+    "port": 3306
+  },
+  "nacos": {
+    "mode": "managed",
+    "serverAddr": "rk-nacos:8848",
+    "namespace": "public",
+    "group": "DEFAULT_GROUP",
+    "username": "nacos",
+    "password": "<CHANGE_ME>",
+    "initializeConfigs": true
+  },
+  "redis": {
+    "mode": "managed",
+    "host": "rk-redis",
+    "port": 6379,
+    "password": "<CHANGE_ME>",
+    "database": 0
+  },
+  "rabbitmq": {
+    "mode": "managed",
+    "host": "rk-rabbitmq",
+    "port": 5672,
+    "managementPort": 15672,
+    "username": "rk_app",
+    "password": "<CHANGE_ME>",
+    "virtualHost": "/rk"
+  },
+  "minio": {
+    "mode": "managed",
+    "endpoint": "http://rk-minio:9000",
+    "publicBaseUrl": "http://203.0.113.10/minio-files/",
+    "rootUser": "rkminio",
+    "rootPassword": "<CHANGE_ME>",
+    "accessKey": "<CHANGE_ME>",
+    "secretKey": "<CHANGE_ME>",
+    "bucket": "rk-bucket"
+  },
+  "xxlJob": {
+    "mode": "managed",
+    "adminAddress": "http://rk-xxl-job:8880/xxl-job-admin",
+    "accessToken": "<CHANGE_ME>"
+  },
+  "registry": {
+    "server": "registry.example.invalid",
+    "namespace": "rk-web",
+    "username": "",
+    "password": "<CHANGE_ME_OPTIONAL>",
+    "dockerConfigJson": "<CHANGE_ME_OPTIONAL>",
+    "imagePullSecret": "rk-registry"
+  }
+}

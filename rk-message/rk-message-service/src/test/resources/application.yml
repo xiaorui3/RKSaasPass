@@ -1,0 +1,27 @@
+spring:
+  cloud:
+    nacos:
+      config:
+        enabled: false
+      discovery:
+        enabled: false
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: 
+  sql:
+    init:
+      mode: always
+      schema-locations:
+        - classpath:schema.sql
+  h2:
+    console:
+      enabled: true
+  profiles:
+    active: test
+
+# 禁用Swagger以避免测试环境中的兼容性问题
+springfox:
+  documentation:
+    enabled: false

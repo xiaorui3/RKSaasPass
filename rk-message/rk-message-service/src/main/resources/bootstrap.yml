@@ -1,0 +1,65 @@
+﻿server:
+  port: 8085  #绔彛
+  tomcat:
+    uri-encoding: UTF-8   #鏈嶅姟缂栫爜
+spring:
+  profiles:
+    active: dev
+  application:
+    name: rk-message
+  cloud:
+    nacos:
+      server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
+      config:
+        namespace: ${NACOS_NAMESPACE:public}
+        group: DEFAULT_GROUP
+        file-extension: yaml
+        shared-configs: # 鍏变韩閰嶇疆
+          - data-id: rk-shared-spring.yaml # 鍏变韩spring閰嶇疆
+            refresh: false
+          - data-id: rk-shared-redis.yaml # 鍏变韩redis閰嶇疆
+            refresh: false
+          - data-id: rk-shared-mybatis.yaml # 鍏变韩mybatis閰嶇疆
+            refresh: false
+          - data-id: rk-shared-logs.yaml # 鍏变韩鏃ュ織閰嶇疆
+            refresh: false
+          - data-id: rk-shared-feign.yaml # 鍏变韩feign閰嶇疆
+            refresh: false
+          - data-id: rk-shared-mq.yaml # 鍏变韩mq閰嶇疆
+            refresh: false
+          - data-id: rk-shared-minio.yaml # 鍏变韩minio閰嶇疆
+            refresh: false
+      discovery:
+        namespace: ${NACOS_NAMESPACE:public}
+        group: DEFAULT_GROUP
+tj:
+  swagger:
+    enable: true
+    enableResponseWrap: true
+    package-path: com.tianji.message.controller
+    title: 澶╂満瀛﹀爞 - 娑堟伅涓績鎺ュ彛鏂囨。
+    description: 璇ユ湇鍔＄敤浜庣珯鍐呬俊銆侀€氱煡绠＄悊銆佺煭淇″彂閫佺瓑鍔熻兘
+    contact-name: 浼犳櫤鏁欒偛路鐮旂┒闄?    contact-url: http://www.itcast.cn/
+    contact-email: zhanghuyi@itcast.cn
+    version: v1.0
+  tj:
+  auth:
+    resource:
+      enable: true
+      excludeLoginPaths:
+        - /students/register
+        - /users/detail/{isStaff}
+        - /users/list
+        - GET:/users/{id}
+        - /users/{id}/type
+        - /users/ids
+        # 鑱旂郴鎴戜滑API - 鍏佽鍖垮悕鎻愪氦娑堟伅
+        - GET:/api/contact/public/shield
+        - POST:/api/contact/submit
+        - POST:/api/contact/submit-form
+  jdbc:
+    database: rk_message
+  sms:
+    ali:
+      accessId: "${ALIYUN_SMS_ACCESS_ID:}"
+      accessSecret: "${ALIYUN_SMS_ACCESS_SECRET:}"

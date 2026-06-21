@@ -1,0 +1,72 @@
+﻿server:
+  port: 8084  #绔彛
+  tomcat:
+    uri-encoding: UTF-8   #鏈嶅姟缂栫爜
+spring:
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+  profiles:
+    active: dev
+  application:
+    name: rk-file
+  cloud:
+    nacos:
+      server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
+      config:
+        namespace: ${NACOS_NAMESPACE:public}
+        group: DEFAULT_GROUP
+        file-extension: yaml
+        shared-configs: # 鍏变韩閰嶇疆
+          - data-id: rk-shared-spring.yaml # 鍏变韩spring閰嶇疆
+            refresh: false
+          - data-id: rk-shared-redis.yaml # 鍏变韩redis閰嶇疆
+            refresh: false
+          - data-id: rk-shared-logs.yaml # 鍏变韩鏃ュ織閰嶇疆
+            refresh: false
+          - data-id: rk-shared-mybatis.yaml # 鍏变韩mybatis閰嶇疆
+            refresh: false
+          - data-id: rk-shared-feign.yaml # 鍏变韩feign閰嶇疆
+            refresh: false
+          - data-id: rk-shared-minio.yaml # 鍏变韩minio閰嶇疆
+            refresh: false
+      discovery:
+        namespace: ${NACOS_NAMESPACE:public}
+        group: DEFAULT_GROUP
+tj:
+  swagger:
+    enable: true
+    package-path: com.tianji.media.controller
+    title: 澶╂満瀛﹀爞 - 濯掕祫涓績鎺ュ彛鏂囨。
+    description: 璇ユ湇鍔″寘鍚浘鐗囩鐞嗐€佸獟璧勭鐞嗙瓑
+    contact-name: 浼犳櫤鏁欒偛路鐮旂┒闄?    contact-url: http://www.itcast.cn/
+    contact-email: zhanghuyi@itcast.cn
+    version: v1.0
+    enableResponseWrap: true
+  auth:
+    resource:
+      enable: true
+      excludeLoginPaths:
+        - /medias/signature/play
+  jdbc:
+    database: rk_file
+  platform:
+    file: ${RK_FILE_PLATFORM:MINIO}
+    media: ${RK_MEDIA_PLATFORM:MINIO}
+  tencent:
+    appId: "${TENCENT_CLOUD_APP_ID:}"
+    secretId: "${TENCENT_CLOUD_SECRET_ID:}"
+    secretKey: "${TENCENT_CLOUD_SECRET_KEY:}"
+    vod:
+      enable: ${TENCENT_ENABLE:false}
+      vodValidSeconds: 7776000
+      region: "${TENCENT_CLOUD_REGION:ap-shanghai}"
+      procedure: "${TENCENT_VOD_PROCEDURE:}"
+      urlKey: "${TENCENT_VOD_URL_KEY:}"
+      pfcg: "${TENCENT_VOD_PFCG:}"
+    cos:
+      enable: ${TENCENT_ENABLE:false}
+      region: "${TENCENT_CLOUD_REGION:ap-shanghai}"
+      bucket: "${TENCENT_COS_BUCKET:}"
+      multipartUploadThreshold: 5242880 # 5mb锛岃Е鍙戝垎鐗囦笂浼犵殑闃堝€?      minimumUploadPartSize: 1048576 # 1mb锛屽垎鐗囩殑鏈€灏忓ぇ灏?

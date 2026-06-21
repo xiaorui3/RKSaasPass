@@ -1,0 +1,103 @@
+﻿server:
+  port: 8082
+  tomcat:
+    uri-encoding: UTF-8
+
+spring:
+  profiles:
+    active: dev
+  application:
+    name: rk-user
+  cloud:
+    nacos:
+      server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
+      config:
+        namespace: ${NACOS_NAMESPACE:public}
+        group: DEFAULT_GROUP
+        file-extension: yaml
+        shared-configs:
+          - data-id: rk-shared-spring.yaml
+            refresh: false
+          - data-id: rk-shared-redis.yaml
+            refresh: false
+          - data-id: rk-shared-mybatis.yaml
+            refresh: false
+          - data-id: rk-shared-logs.yaml
+            refresh: false
+          - data-id: rk-shared-feign.yaml
+            refresh: false
+          - data-id: rk-shared-mq.yaml
+            refresh: false
+          - data-id: rk-shared-xxljob.yaml
+            refresh: false
+          - data-id: rk-shared-minio.yaml
+            refresh: false
+      discovery:
+        namespace: ${NACOS_NAMESPACE:public}
+        group: DEFAULT_GROUP
+
+tj:
+  swagger:
+    enable: true
+    enableResponseWrap: true
+    package-path: com.tianji.user.controller
+    title: 澶╂満瀛﹀爞 - 鐢ㄦ埛涓績鎺ュ彛鏂囨。
+    description: 璇ユ湇鍔＄敤浜庣敤鎴风鐞嗐€佺敤鎴蜂俊鎭鐞?
+    contact-name: 浼犳櫤鏁欒偛路鐮旂┒闄?
+    contact-url: http://www.itcast.cn/
+    contact-email: zhanghuyi@itcast.cn
+    version: v1.0
+  auth:
+    resource:
+      enable: true
+      excludeLoginPaths:
+        - /students/register
+        - /tenants/list
+        - /mobile/releases/latest
+        - /admin/ops/public/deploy-package/active-migration
+        - /api/admission/submit
+        - /api/admission/check-status
+        - /api/admission/validate-email
+        - /api/admission/form-config/public
+        - /api/config/theme/public
+        - /api/email-verification/send
+        - /api/email-verification/verify
+        - /api/email-verification/internal/send
+        - /api/email-verification/internal/verify
+        - /api/audit/internal/logininfor
+        - /api/email-center/internal/invitations/register-success
+        - /api/email-center/internal/send
+        - /api/admission/internal/register-success-notify
+        - /api/email-center/internal/tasks/*/recipients/*/success
+        - /api/email-center/internal/tasks/*/recipients/*/failure
+        - /api/referral-codes/internal/validate
+        - /api/referral-codes/internal/register-success
+        - /api/email-center/invitations/*
+        - /api/email-center/invitations/*/accept
+        - /api/alumni/profile-form/**
+        - /users/detail/**
+        - /users/list
+        - GET:/users/{id}
+        - /users/{id}/type
+        - /users/ids
+        - /users/me
+        - /users/internal/sync
+        - /users/**
+  jdbc:
+    database: rk_user
+  xxl-job:
+    admin:
+      address: ${XXL_JOB_ADMIN_ADDRESS:http://rk-xxl-job:8880/xxl-job-admin}
+    executor:
+      app-name: ${spring.application.name}
+      port: ${XXL_JOB_EXECUTOR_PORT:9999}
+      log-path: logs/xxl-job/jobhandler
+      log-retention-days: 30
+
+mybatis-plus:
+  configuration:
+    default-enum-type-handler: com.baomidou.mybatisplus.core.handlers.MybatisEnumTypeHandler
+  global-config:
+    db-config:
+      id-type: auto
+      use-generated-keys: true

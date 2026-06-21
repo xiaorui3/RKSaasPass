@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Upload Contract Smoke</title>
+  </head>
+  <body>
+    <script type="module">
+      import { resolveUploadTarget, uploadFile } from '/src/api/common.js'
+
+      window.uploadSmoke = {
+        resolveUploadTarget,
+        uploadFile
+      }
+    </script>
+  </body>
+  </html>

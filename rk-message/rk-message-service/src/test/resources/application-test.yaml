@@ -1,0 +1,37 @@
+# 消息服务测试环境配置
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/rk_message_test?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&serverTimezone=Asia/Shanghai
+    username: root
+    password: ${TEST_DB_PASSWORD:change-me}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+  redis:
+    host: localhost
+    port: 6379
+    database: 4
+  mail:
+    host: smtp.example.com
+    port: 587
+    username: test@example.com
+    password: ${TEST_MAIL_PASSWORD:change-me}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+# MyBatis配置
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+# 日志配置
+logging:
+  level:
+    com.tianji: DEBUG
+    org.springframework: INFO

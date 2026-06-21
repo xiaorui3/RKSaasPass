@@ -1,0 +1,14 @@
+﻿spring:
+  cloud:
+    nacos:
+      server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
+      discovery:
+        # ip: ${SERVICE_INSTANCE_IP:}
+
+# 鏈湴寮€鍙戞椂绂佺敤 Seata锛堟棤娉曡繛鎺ヨ繙绋?Docker 鍐呯綉锛?
+seata:
+  enabled: false
+
+logging:
+  level:
+    com.tianji: debug

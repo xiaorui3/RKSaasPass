@@ -1,0 +1,46 @@
+﻿server:
+  port: 8089  #绔彛
+  tomcat:
+    uri-encoding: UTF-8   #鏈嶅姟缂栫爜
+  error:
+    include-message: always #杩斿洖鐨勫搷搴斾綋甯︿笂message
+spring:
+  profiles:
+    active: dev
+  application:
+    name: rk-exam
+  cloud:
+    nacos:
+      server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
+      config:
+        namespace: ${NACOS_NAMESPACE:public}
+        group: DEFAULT_GROUP
+        file-extension: yaml
+        shared-configs: # 鍏变韩閰嶇疆
+          - dataId: rk-shared-spring.yaml # 鍏变韩spring閰嶇疆
+          - dataId: rk-shared-redis.yaml # 鍏变韩redis閰嶇疆
+          - dataId: rk-shared-mybatis.yaml # 鍏变韩mybatis閰嶇疆
+          - dataId: rk-shared-logs.yaml # 鍏变韩鏃ュ織閰嶇疆
+          - dataId: rk-shared-feign.yaml # 鍏变韩feign閰嶇疆
+          - dataId: rk-shared-mq.yaml # 鍏变韩mq閰嶇疆
+          - dataId: rk-shared-xxljob.yaml # 鍏变韩mq閰嶇疆
+          - dataId: rk-shared-seata.yaml # 鍏变韩seata閰嶇疆
+      discovery:
+        namespace: ${NACOS_NAMESPACE:public}
+        group: DEFAULT_GROUP
+tj:
+  swagger:
+    enable: true
+    enableResponseWrap: true
+    package-path: com.tianji.exam.controller
+    title: 澶╂満瀛﹀爞 - 鑰冭瘯涓績鎺ュ彛鏂囨。
+    description: 璇ユ湇鍔℃彁渚涢鐩鐞嗐€佽€冭瘯绠＄悊銆佹暟鎹粺璁＄瓑鍔熻兘
+    contact-name: 浼犳櫤鏁欒偛路鐮旂┒闄?
+    contact-url: http://www.itcast.cn/
+    contact-email: zhanghuyi@itcast.cn
+    version: v1.0
+  jdbc:
+    database: rk_exam
+  auth:
+    resource:
+      enable: false

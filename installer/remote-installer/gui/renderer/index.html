@@ -1,0 +1,202 @@
+﻿<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RK-Web 瀹夎鍣?/title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app">
+      <header class="topbar">
+        <div>
+          <h1>RK-Web 瀹夎鍣?/h1>
+          <p>杩滅▼杩炴帴鐩爣 Linux 鏈哄櫒锛屾媺鍙栨簮鐮佸苟鎵ц鍏ㄦ柊瀹夎銆?/p>
+        </div>
+        <div class="status" id="statusBadge">绌洪棽</div>
+      </header>
+
+      <section class="workspace">
+        <form id="installForm" class="form-panel">
+          <section class="section">
+            <div class="section-title">
+              <h2>鐩爣鏈哄櫒</h2>
+              <span>SSH</span>
+            </div>
+            <div class="grid two">
+              <label>涓绘満鍦板潃 <input name="sshHost" value="203.0.113.10" required /></label>
+              <label>绔彛 <input name="sshPort" type="number" value="30139" required /></label>
+              <label>鐢ㄦ埛鍚?<input name="sshUsername" value="root" required /></label>
+              <label>璁よ瘉鏂瑰紡
+                <select name="sshAuthMode" id="sshAuthMode">
+                  <option value="password">瀵嗙爜</option>
+                  <option value="key">瀵嗛挜</option>
+                </select>
+              </label>
+              <label class="password-field" id="sshPasswordRow">SSH 瀵嗙爜 <input name="sshPassword" type="password" autocomplete="off" /></label>
+              <label class="key-field hidden">绉侀挜璺緞
+                <div class="inline-picker">
+                  <input name="sshPrivateKeyPath" />
+                  <button type="button" class="secondary" data-pick-file="sshPrivateKeyPath">閫夋嫨</button>
+                </div>
+              </label>
+              <label class="key-field hidden">瀵嗛挜鍙ｄ护 <input name="sshPassphrase" type="password" autocomplete="off" /></label>
+              <label>杩炴帴瓒呮椂绉掓暟 <input name="connectTimeoutSeconds" type="number" value="30" /></label>
+            </div>
+          </section>
+
+          <section class="section">
+            <div class="section-title">
+              <h2>婧愮爜涓庨儴缃?/h2>
+              <span>Git / Runtime</span>
+            </div>
+            <div class="grid two">
+              <label>浠ｇ爜骞冲彴
+                <select name="gitProvider">
+                  <option value="gitee" selected>Gitee</option>
+                  <option value="github">GitHub</option>
+                </select>
+              </label>
+              <label>鍒嗘敮 <input name="gitBranch" value="cloud-master-new" required /></label>
+              <label class="wide">浠撳簱鍦板潃 <input name="repositoryUrl" value="https://github.com/example/rk-web" required /></label>
+              <label>Git 鐢ㄦ埛鍚?<input name="gitUsername" /></label>
+              <label>Git Token <input name="gitToken" type="password" autocomplete="off" /></label>
+              <label>杩愯妯″紡
+                <select name="runtimeMode" id="runtimeMode">
+                  <option value="docker-compose">Docker Compose</option>
+                  <option value="k3s" selected>K3s</option>
+                </select>
+              </label>
+              <label>鐩爣鐩綍 <input name="targetPath" value="/opt/rk-web" required /></label>
+              <label>璁块棶鍦板潃 <input name="publicBaseUrl" id="publicBaseUrl" value="http://127.0.0.1:30080" required /></label>
+              <input type="hidden" name="accessMode" value="local-loopback" />
+              <label>Compose 椤圭洰鍚?<input name="composeProjectName" value="rk-web" /></label>
+              <label class="switch"><input name="domesticMirror" type="checkbox" checked /> 浣跨敤鍥藉唴闀滃儚婧?/label>
+            </div>
+            <div class="grid two k3s-only hidden">
+              <label>鍛藉悕绌洪棿 <input name="k3sNamespace" value="rk-web-test" /></label>
+              <label>闀滃儚妯″紡
+                <select name="k3sImageMode" id="k3sImageMode">
+                  <option value="registry" selected>registry</option>
+                  <option value="local-tar">local-tar</option>
+                </select>
+              </label>
+              <label class="switch"><input name="installDocker" type="checkbox" /> K3s 鏋勫缓鍚屾椂瀹夎 Docker</label>
+              <label class="switch"><input name="installK3s" type="checkbox" checked /> 鑷姩瀹夎 K3s</label>
+              <label>鍓嶇 NodePort <input name="frontendNodePort" type="number" value="30080" /></label>
+              <label>缃戝叧 NodePort <input name="gatewayNodePort" type="number" value="30010" /></label>
+            </div>
+          </section>
+
+          <section class="section">
+            <div class="section-title">
+              <h2>绯荤粺绠＄悊鍛?/h2>
+              <span>Seed</span>
+            </div>
+            <div class="grid two">
+              <label>绉熸埛鍚?<input name="tenantName" value="RK System" /></label>
+              <label>绉熸埛缂栫爜 <input name="tenantCode" value="system" /></label>
+              <label>绠＄悊鍛樿处鍙?<input name="adminUsername" value="admin" required /></label>
+              <label>鍒濆瀵嗙爜 <input name="adminPassword" type="password" autocomplete="off" required /></label>
+              <label>閭 <input name="adminEmail" value="admin@example.invalid" /></label>
+              <label>鎵嬫満鍙?<input name="adminPhone" /></label>
+            </div>
+          </section>
+
+          <section class="section">
+            <div class="section-title">
+              <h2>涓棿浠跺瘑鐮?/h2>
+              <span>Managed</span>
+            </div>
+            <div class="grid two">
+              <label>MySQL root 瀵嗙爜 <input name="mysqlRootPassword" type="password" autocomplete="off" required /></label>
+              <label>MySQL 搴旂敤瀵嗙爜 <input name="mysqlAppPassword" type="password" autocomplete="off" required /></label>
+              <label>Nacos 瀵嗙爜 <input name="nacosPassword" type="password" autocomplete="off" required /></label>
+              <label>Redis 瀵嗙爜 <input name="redisPassword" type="password" autocomplete="off" required /></label>
+              <label>RabbitMQ 瀵嗙爜 <input name="rabbitPassword" type="password" autocomplete="off" required /></label>
+              <label>XXL-Job Token <input name="xxlToken" type="password" autocomplete="off" required /></label>
+              <label>MinIO root 鐢ㄦ埛 <input name="minioRootUser" value="rkminio" /></label>
+              <label>MinIO root 瀵嗙爜 <input name="minioRootPassword" type="password" autocomplete="off" required /></label>
+              <label>MinIO Access Key <input name="minioAccessKey" type="password" autocomplete="off" required /></label>
+              <label>MinIO Secret Key <input name="minioSecretKey" type="password" autocomplete="off" required /></label>
+              <label>MinIO Bucket <input name="minioBucket" value="rk-bucket" /></label>
+            </div>
+          </section>
+
+          <section class="section registry-section">
+            <div class="section-title">
+              <h2>闀滃儚浠撳簱</h2>
+              <span>K3s Registry</span>
+            </div>
+            <div class="grid two">
+              <label>浠撳簱妯″紡
+                <select name="registryProvider" id="registryProvider">
+                  <option value="harbor" selected>Harbor 绉佹湁浠撳簱</option>
+                  <option value="aliyun">闃块噷浜?ACR</option>
+                  <option value="custom">鑷畾涔?Registry</option>
+                </select>
+              </label>
+              <label>Registry Server <input name="registryServer" id="registryServer" value="127.0.0.1:30090" /></label>
+              <label>Namespace <input name="registryNamespace" value="rk-web" /></label>
+              <label>鐢ㄦ埛鍚?<input name="registryUsername" id="registryUsername" value="admin" /></label>
+              <label>瀵嗙爜 <input name="registryPassword" id="registryPassword" type="password" autocomplete="off" value="Harbor12345" /></label>
+              <label class="harbor-field switch"><input name="installHarbor" type="checkbox" checked /> 鑷姩瀹夎 Harbor</label>
+              <label class="harbor-field">Harbor HTTP 绔彛 <input name="harborHttpPort" id="harborHttpPort" type="number" value="30090" /></label>
+              <label class="harbor-field">Harbor 鏁版嵁鐩綍 <input name="harborDataPath" value="/data/harbor" /></label>
+              <label class="harbor-field">Harbor 鐗堟湰 <input name="harborVersion" value="2.14.4" /></label>
+              <label class="switch"><input name="registryInsecure" type="checkbox" checked /> 鍏佽 HTTP / insecure registry</label>
+              <label class="wide">Docker Config JSON <textarea name="registryDockerConfigJson" rows="3"></textarea></label>
+              <label>Image Pull Secret <input name="imagePullSecret" value="rk-registry" /></label>
+            </div>
+          </section>
+        </form>
+
+        <aside class="run-panel">
+          <section class="section sticky">
+            <div class="section-title">
+              <h2>鎵ц</h2>
+              <span>Actions</span>
+            </div>
+            <label>鏃ュ織鐩綍
+              <div class="inline-picker">
+                <input name="logDir" id="logDir" value="logs/remote-test" />
+                <button type="button" class="secondary" id="pickLogDir">閫夋嫨</button>
+              </div>
+            </label>
+            <div class="actions">
+              <button type="button" class="primary" data-command="validate">楠岃瘉閰嶇疆</button>
+              <button type="button" class="primary" data-command="preflight">棰勬鏈哄櫒</button>
+              <button type="button" class="danger" data-command="install">寮€濮嬪畨瑁?/button>
+              <button type="button" class="secondary" id="stopBtn">鍋滄</button>
+            </div>
+            <div class="meta">
+              <div>褰撳墠浠诲姟锛?strong id="currentTask">鏃?/strong></div>
+              <div>涓存椂閰嶇疆锛?span id="configPath">鏈敓鎴?/span></div>
+            </div>
+            <div class="expectation">
+              <div class="expectation-title">棰勮璁块棶</div>
+              <div>鍓嶇锛?span id="expectedFrontendUrl">http://127.0.0.1:30080</span></div>
+              <div>缃戝叧锛?span id="expectedGatewayUrl">http://127.0.0.1:30010</span></div>
+              <div>闀滃儚浠撳簱锛?span id="expectedRegistryUrl">Harbor http://127.0.0.1:30090</span></div>
+              <div>璁块棶妯″紡锛?span id="expectedAccessNote">local-loopback (SSH only)</span></div>
+              <div>棰勮鑰楁椂锛?span id="expectedInstallTime">40-90 鍒嗛挓</span></div>
+            </div>
+          </section>
+
+          <section class="section log-section">
+            <div class="section-title">
+              <h2>瀹炴椂鏃ュ織</h2>
+              <span>Console</span>
+            </div>
+            <div class="log-toolbar">
+              <button type="button" class="secondary" id="clearLog">娓呯┖</button>
+              <button type="button" class="secondary" id="copyLog">澶嶅埗</button>
+            </div>
+            <pre id="logOutput"></pre>
+          </section>
+        </aside>
+      </section>
+    </main>
+    <script type="module" src="./renderer.mjs"></script>
+  </body>
+</html>

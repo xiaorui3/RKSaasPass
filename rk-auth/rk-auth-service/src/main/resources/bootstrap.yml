@@ -1,0 +1,70 @@
+﻿server:
+  port: 8081  #璁よ瘉鏈嶅姟绔彛
+  tomcat:
+    uri-encoding: UTF-8
+
+spring:
+  profiles:
+    active: dev
+  application:
+    name: rk-auth
+  cloud:
+    nacos:
+      server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
+      config:
+        namespace: ${NACOS_NAMESPACE:public}
+        group: DEFAULT_GROUP
+        file-extension: yaml
+        shared-configs:
+          - data-id: rk-shared-spring.yaml
+            refresh: false
+          - data-id: rk-shared-redis.yaml
+            refresh: false
+          - data-id: rk-shared-mybatis.yaml
+            refresh: false
+          - data-id: rk-shared-logs.yaml
+            refresh: false
+          - data-id: rk-shared-feign.yaml
+            refresh: false
+      discovery:
+        namespace: ${NACOS_NAMESPACE:public}
+        group: DEFAULT_GROUP
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${MYSQL_HOST:127.0.0.1}:${MYSQL_PORT:3306}/rk_auth?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
+    username: ${RK_AUTH_DB_USERNAME:rk_auth}
+    password: ${RK_AUTH_DB_PASSWORD:change-me}
+
+# MyBatis-Plus閰嶇疆
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    default-enum-type-handler: com.baomidou.mybatisplus.core.handlers.MybatisEnumTypeHandler
+  global-config:
+    db-config:
+      logic-delete-field: is_deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+
+# Swagger鏂囨。閰嶇疆
+tj:
+  swagger:
+    enable: false
+    enableResponseWrap: true
+    package-path: com.tianji.auth.controller
+    title: RK璁よ瘉鏈嶅姟鎺ュ彛鏂囨。
+    description: 璇ユ湇鍔＄敤浜庣敤鎴疯璇併€佹潈闄愮鐞?
+    contact-name: RK寮€鍙戝洟闃?
+    version: v1.0
+  auth:
+    resource:
+      enable: true
+      includeLoginPaths:
+        - /users/me
+        - /auth/logout
+  jdbc:
+    database: rk_auth
+
+logging:
+  level:
+    com.tianji: debug

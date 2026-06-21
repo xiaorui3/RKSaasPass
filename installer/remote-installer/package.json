@@ -1,0 +1,59 @@
+{
+  "name": "rk-web-remote-installer",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "rk-web-installer": "./src/index.mjs"
+  },
+  "main": "gui/main.mjs",
+  "scripts": {
+    "start": "node src/index.mjs wizard",
+    "gui": "electron .",
+    "validate": "node src/index.mjs validate --config examples/rk-remote-install.example.json",
+    "preflight": "node src/index.mjs preflight --config examples/rk-remote-install.example.json",
+    "remote:install": "node src/index.mjs install --config examples/rk-remote-install.example.json",
+    "test": "node --test tests/*.test.mjs",
+    "build:cli": "node scripts/build-cli.mjs",
+    "build:gui": "npm run build:cli && electron-builder --win portable --x64",
+    "build:win": "npm run build:gui"
+  },
+  "dependencies": {
+    "@yao-pkg/pkg": "^6.20.0",
+    "bcryptjs": "^3.0.3",
+    "ssh2": "^1.17.0"
+  },
+  "devDependencies": {
+    "electron": "^37.2.0",
+    "electron-builder": "^26.0.12"
+  },
+  "build": {
+    "appId": "com.rkweb.installer",
+    "productName": "RK-Web Installer",
+    "directories": {
+      "output": "dist-gui"
+    },
+    "files": [
+      "gui/**/*",
+      "src/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "dist/rk-web-installer.exe",
+        "to": "rk-web-installer.exe"
+      }
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "artifactName": "rk-web-installer-gui.exe"
+    }
+  }
+}
