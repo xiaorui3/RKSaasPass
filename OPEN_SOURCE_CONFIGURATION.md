@@ -194,7 +194,16 @@ Android 客户端位于 `android-client/rk-club-android`。默认服务地址应
 ```powershell
 powershell -ExecutionPolicy Bypass -File android-client\rk-club-android\build-apk.ps1
 ```
+移动端网关：
 
+- APK 打包时可以指定网关。
+- Windows：
+
+  .\build-apk.ps1 -GatewayBaseUrl "http://149.88.87.128:30421"
+
+- Linux：
+
+  ./build-apk.sh --gateway-base-url "http://149.88.87.128:30421"
 如需正式发布 APK，请在本地或 CI 的安全变量中配置签名文件与签名密码，不要提交 keystore、签名配置或打包后的私有 APK。
 
 ## 短信、邮件与云服务
